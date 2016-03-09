@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * @author nhfmaster
  */
-public class KMeansAlgo {
+public class KMeans {
 	private List<ClusterCenter> clusterCenterList; // 每次聚类中心的List列表
 	private List<PixelPoint> pointList; // 像素点List列表
 	private int numOfCluster; // 聚类的数量（分为几类）
@@ -15,7 +15,7 @@ public class KMeansAlgo {
 	 * @param clusters
 	 *            聚类的数量（分为几类）
 	 */
-	public KMeansAlgo(int clusters) {
+	public KMeans(int clusters) {
 		clusterCenterList = new ArrayList<ClusterCenter>();
 		pointList = new ArrayList<PixelPoint>();
 		numOfCluster = clusters;
@@ -95,11 +95,7 @@ public class KMeansAlgo {
 			pointList.get(i).setLable(getCloserCluster(clusterDisValues)); // 得到每个点距离最近的一个聚类中心
 		}
 
-		// calculate the old summary
-		// assign the points to cluster center
-		// calculate the new cluster center
-		// computation the delta value
-		// stop condition--
+		// 计算前一次与本次聚类中心是否一致，不一致则一直重复聚类，一致则停止聚类
 		double[] oldClusterCenterColors = reCalculateClusterCenters();
 		while (true) {
 			stepClusters();
@@ -111,7 +107,7 @@ public class KMeansAlgo {
 			}
 		}
 
-		// update the result image
+		// 得到最终聚类后的图像
 		dest = ImageUtil.createCompatibleDestImage(src, null);
 		index = 0;
 		int[] outPixels = new int[width * height];
@@ -119,8 +115,8 @@ public class KMeansAlgo {
 			for (int i = 0; i < clusterCenterList.size(); i++) {
 				PixelPoint p = this.pointList.get(j);
 				if (clusterCenterList.get(i).getIndex() == p.getLable()) {
-					int row = p.getRow(); // row
-					int col = p.getCol(); // column
+					int row = p.getRow();
+					int col = p.getCol();
 					index = row * width + col;
 					int[] rgb = clusterCenterList.get(i).getRGB();
 					outPixels[index] = (0xff << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];

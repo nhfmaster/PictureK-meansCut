@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
  */
 public class Test {
 	public static void main(String args[]) throws IOException {
-		KMeansAlgo km = new KMeansAlgo(3);
+		KMeans km = new KMeans(3);
 		File srcFile = new File("D:\\a.jpg");
 		File desFile = new File("D:\\e.jpg");
 		BufferedImage src = ImageIO.read(srcFile);
