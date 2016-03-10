@@ -62,10 +62,10 @@ public class KMeans {
 			int randomHeight = random.nextInt(height);
 			index = randomHeight * width + randomwidth; // 随机设置的index
 			ClusterCenter clusterCenter = new ClusterCenter(randomwidth, randomHeight); // 获得聚类中心的横坐标和纵坐标
-			int argb = inPixels[i]; //
-			int red = (argb >> 16) & 0xff; // 获得像素点的red
-			int green = (argb >> 8) & 0xff; // 获得像素点的green
-			int blue = (argb) & 0xff;// 获得像素点的blue
+			int rgb = inPixels[i]; //
+			int red = (rgb >> 16) & 0xff; // 获得像素点的red
+			int green = (rgb >> 8) & 0xff; // 获得像素点的green
+			int blue = (rgb) & 0xff;// 获得像素点的blue
 			clusterCenter.setRGB(new int[] { red, green, blue });
 			clusterCenter.setIndex(i);
 			clusterCenterList.add(clusterCenter);
@@ -74,7 +74,7 @@ public class KMeans {
 		// 将所有的像素点存入pointList中用于聚类
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				index = i * width + j;
+				index = i * width + j; // 根据像素点横纵坐标计算数组下标
 				int color = inPixels[index];
 				PixelPoint pixelPoint = new PixelPoint(i, j);
 				int red = (color >> 16) & 0xff;
@@ -181,23 +181,23 @@ public class KMeans {
 		double[] greenSum = new double[3];
 		double[] blueSum = new double[3];
 		for (int i = 0; i < pointList.size(); i++) {
-			int cIndex = (int) pointList.get(i).getClusterCenterIndex();// 得到前一次计算的每个像素点对应的聚类中心index
-			clusterCenterList.get(cIndex).addNumOfPixel(); // 增加对应类的总像素点数
-			int tr = (int) pointList.get(i).getRGB()[0]; // 获得该像素点的red
-			int tg = (int) pointList.get(i).getRGB()[1];// 获得该像素点的green
-			int tb = (int) pointList.get(i).getRGB()[2];// 获得该像素点的blue
-			redSum[cIndex] += tr;
-			greenSum[cIndex] += tg;
-			blueSum[cIndex] += tb;
+			int clusterIndex = (int) pointList.get(i).getClusterCenterIndex();// 得到前一次计算的每个像素点对应的聚类中心index
+			clusterCenterList.get(clusterIndex).addNumOfPixel(); // 增加对应类的总像素点数
+			int tempRed = (int) pointList.get(i).getRGB()[0]; // 获得该像素点的red
+			int tempGreen = (int) pointList.get(i).getRGB()[1];// 获得该像素点的green
+			int tempBlue = (int) pointList.get(i).getRGB()[2];// 获得该像素点的blue
+			redSum[clusterIndex] += tempRed;
+			greenSum[clusterIndex] += tempGreen;
+			blueSum[clusterIndex] += tempBlue;
 		}
 
 		double[] clusterCentersColors = new double[clusterCenterList.size()];
 		for (int i = 0; i < clusterCenterList.size(); i++) {
 			double sum = clusterCenterList.get(i).getNumOfPixels();
-			int cIndex = clusterCenterList.get(i).getIndex();
-			int red = (int) (redSum[cIndex] / sum); // 计算该类所有像素点red值的平均值
-			int green = (int) (greenSum[cIndex] / sum);// 计算该类所有像素点green值的平均值
-			int blue = (int) (blueSum[cIndex] / sum);// 计算该类所有像素点blue值的平均值
+			int clusterIndex = clusterCenterList.get(i).getIndex();
+			int red = (int) (redSum[clusterIndex] / sum); // 计算该类所有像素点red值的平均值
+			int green = (int) (greenSum[clusterIndex] / sum);// 计算该类所有像素点green值的平均值
+			int blue = (int) (blueSum[clusterIndex] / sum);// 计算该类所有像素点blue值的平均值
 			System.out.println("red = " + red + " green = " + green + " blue = " + blue);
 			int clusterColor = (255 << 24) | (red << 16) | (green << 8) | blue;
 			System.out.println("clusterColor=" + clusterColor);

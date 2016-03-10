@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class Test {
 	public static void main(String args[]) throws IOException {
 		KMeans km = new KMeans(3);
-		File srcFile = new File("D:\\4.jpg");
+		File srcFile = new File("D:\\c.png");
 		File desFile = new File("D:\\e.jpg");
 		BufferedImage src = ImageIO.read(srcFile);
 		ColorModel desCM = src.getColorModel();

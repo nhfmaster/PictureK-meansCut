@@ -61,11 +61,11 @@ public class ClusterCenter { // 聚类中心
 	}
 
 	/**
-	 * @param cValue
+	 * @param rgb
 	 *            像素数组
 	 */
-	public void setRGB(int[] cValue) {
-		this.rgb = cValue;
+	public void setRGB(int[] rgb) {
+		this.rgb = rgb;
 	}
 
 	/**

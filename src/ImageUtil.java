@@ -10,16 +10,16 @@ public class ImageUtil {
 	 * 
 	 * @param src
 	 *            BufferedImage类型 输入图像信息
-	 * @param dstCM
+	 * @param desCM
 	 *            ColorModel类型 色彩空间模型
 	 * @return BufferedImage类型的图像信息
 	 */
-	public static BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel dstCM) {
-		if (dstCM == null)
-			dstCM = src.getColorModel();
+	public static BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel desCM) {
+		if (desCM == null)
+			desCM = src.getColorModel();
 		// 不用其他的构造方法是因为无法确定输出的图像色彩空间类型
-		return new BufferedImage(dstCM, dstCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),
-				dstCM.isAlphaPremultiplied(), null); // isAlphaPremultiplied方法用于判断
+		return new BufferedImage(desCM, desCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),
+				desCM.isAlphaPremultiplied(), null); // isAlphaPremultiplied方法用于判断
 														// ColorModel
 														// 转换的像素值中是否预乘
 														// alpha。预乘

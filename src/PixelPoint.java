@@ -93,16 +93,19 @@ public class PixelPoint {
 	}
 
 	/**
+	 * 得到该聚类中心是第几类
 	 * 
-	 * @return
+	 * @return clusterCenterIndex 聚类中心的类别号
 	 */
 	public int getClusterCenterIndex() {
 		return clusterCenterIndex;
 	}
 
 	/**
+	 * 设置聚类中心类别号
 	 * 
-	 * @param label
+	 * @param clusterCenterIndex
+	 *            聚类中心类别号
 	 */
 	public void setClusterCenterIndex(int clusterCenterIndex) {
 		this.clusterCenterIndex = clusterCenterIndex;
