@@ -47,7 +47,7 @@ public class KMeans {
 	 *            BufferedImage类型 输出图像(设置为空图像)
 	 * @return BufferedImage类型 运行kmeans后的输出图像
 	 */
-	public BufferedImage filter(BufferedImage src, BufferedImage dest) {
+	public ArrayList<BufferedImage> filter(BufferedImage src, ArrayList<BufferedImage> des) {
 		// 初始化像素数据
 		int width = src.getWidth();
 		int height = src.getHeight();
@@ -107,26 +107,78 @@ public class KMeans {
 			}
 		}
 
+		/*
+		 * for (int j = 0; j < pointList.size(); j++) { for (int i = 0; i <
+		 * clusterCenterList.size(); i++) { PixelPoint p =
+		 * this.pointList.get(j); if (clusterCenterList.get(i).getIndex() ==
+		 * p.getClusterCenterIndex()) { int row = p.getRow(); int col =
+		 * p.getCol(); index = row * width + col; int[] rgb =
+		 * clusterCenterList.get(i).getRGB(); outPixels[index] = (0xff << 24) |
+		 * (rgb[0] << 16) | (rgb[1] << 8) | rgb[2]; } } }
+		 */
+
 		// 得到最终聚类后的图像
-		dest = ImageUtil.createCompatibleDestImage(src, null);
+		BufferedImage cluster1 = ImageUtil.createCompatibleDestImage(src, null);
+		BufferedImage cluster2 = ImageUtil.createCompatibleDestImage(src, null);
+		BufferedImage cluster3 = ImageUtil.createCompatibleDestImage(src, null);
+
 		index = 0;
-		int[] outPixels = new int[width * height];
-		for (int j = 0; j < pointList.size(); j++) {
-			for (int i = 0; i < clusterCenterList.size(); i++) {
-				PixelPoint p = this.pointList.get(j);
-				if (clusterCenterList.get(i).getIndex() == p.getClusterCenterIndex()) {
-					int row = p.getRow();
-					int col = p.getCol();
-					index = row * width + col;
-					int[] rgb = clusterCenterList.get(i).getRGB();
-					outPixels[index] = (0xff << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
-				}
+		int[] cluster1OutPixels = new int[width * height];
+		for (int i = 0; i < pointList.size(); i++) {
+			if (pointList.get(i).getClusterCenterIndex() == 0) {
+				int row = pointList.get(i).getRow();
+				int col = pointList.get(i).getCol();
+				index = row * width + col;
+				int[] rgb = clusterCenterList.get(1).getRGB();
+				cluster1OutPixels[index] = (0xff << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+			}
+		}
+		for (int i = 0; i < cluster1OutPixels.length; i++) {
+			if (cluster1OutPixels[i] == 0) {
+				cluster1OutPixels[i] = -1;
 			}
 		}
 
-		// 填充像素数据
-		ImageUtil.setRGB(dest, 0, 0, width, height, outPixels);
-		return dest;
+		int[] cluster2OutPixels = new int[width * height];
+		for (int i = 0; i < pointList.size(); i++) {
+			if (pointList.get(i).getClusterCenterIndex() == 1) {
+				int row = pointList.get(i).getRow();
+				int col = pointList.get(i).getCol();
+				index = row * width + col;
+				int[] rgb = clusterCenterList.get(1).getRGB();
+				cluster2OutPixels[index] = (0xff << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+			}
+		}
+		for (int i = 0; i < cluster2OutPixels.length; i++) {
+			if (cluster2OutPixels[i] == 0) {
+				cluster2OutPixels[i] = -1;
+			}
+		}
+
+		int[] cluster3OutPixels = new int[width * height];
+		for (int i = 0; i < pointList.size(); i++) {
+			if (pointList.get(i).getClusterCenterIndex() == 2) {
+				int row = pointList.get(i).getRow();
+				int col = pointList.get(i).getCol();
+				index = row * width + col;
+				int[] rgb = clusterCenterList.get(1).getRGB();
+				cluster3OutPixels[index] = (0xff << 24) | (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+			}
+		}
+		for (int i = 0; i < cluster3OutPixels.length; i++) {
+			if (cluster3OutPixels[i] == 0) {
+				cluster3OutPixels[i] = -1;
+			}
+		}
+
+		ImageUtil.setRGB(cluster1, 0, 0, width, height, cluster1OutPixels);
+		ImageUtil.setRGB(cluster2, 0, 0, width, height, cluster2OutPixels);
+		ImageUtil.setRGB(cluster3, 0, 0, width, height, cluster3OutPixels);
+
+		des.add(0, cluster1);
+		des.add(1, cluster2);
+		des.add(2, cluster3);
+		return des;
 	}
 
 	/**
