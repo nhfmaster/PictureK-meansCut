@@ -5,7 +5,7 @@ public class PixelPoint {
 	private int row;
 	private int col;
 	private float[] rgb;
-	private int lable;
+	private int clusterCenterIndex;
 
 	/**
 	 * PixelPoint构造方法
@@ -96,16 +96,16 @@ public class PixelPoint {
 	 * 
 	 * @return
 	 */
-	public int getLable() {
-		return lable;
+	public int getClusterCenterIndex() {
+		return clusterCenterIndex;
 	}
 
 	/**
 	 * 
-	 * @param lable
+	 * @param label
 	 */
-	public void setLable(int lable) {
-		this.lable = lable;
+	public void setClusterCenterIndex(int clusterCenterIndex) {
+		this.clusterCenterIndex = clusterCenterIndex;
 	}
 
 }

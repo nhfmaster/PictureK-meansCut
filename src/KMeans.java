@@ -81,7 +81,7 @@ public class KMeans {
 				int green = (color >> 8) & 0xff;
 				int blue = (color) & 0xff;
 				pixelPoint.setRGB(new float[] { red, green, blue });
-				pixelPoint.setLable(-1); // 由于只有三类 0 1 2，因此初始化为-1
+				pixelPoint.setClusterCenterIndex(-1); // 由于只有三类 0 1 2，因此初始化为-1
 				pointList.add(pixelPoint);
 			}
 		}
@@ -92,7 +92,7 @@ public class KMeans {
 			for (int j = 0; j < clusterCenterList.size(); j++) {
 				clusterDisValues[j] = calculateEuclideanDistance(clusterCenterList.get(j), pointList.get(i)); // 获得每个点距离聚类中心的欧氏距离
 			}
-			pointList.get(i).setLable(getCloserCluster(clusterDisValues)); // 得到每个点距离最近的一个聚类中心
+			pointList.get(i).setClusterCenterIndex(getCloserCluster(clusterDisValues)); // 得到每个点距离最近的一个聚类中心
 		}
 
 		// 计算前一次与本次聚类中心是否一致，不一致则一直重复聚类，一致则停止聚类
@@ -114,7 +114,7 @@ public class KMeans {
 		for (int j = 0; j < pointList.size(); j++) {
 			for (int i = 0; i < clusterCenterList.size(); i++) {
 				PixelPoint p = this.pointList.get(j);
-				if (clusterCenterList.get(i).getIndex() == p.getLable()) {
+				if (clusterCenterList.get(i).getIndex() == p.getClusterCenterIndex()) {
 					int row = p.getRow();
 					int col = p.getCol();
 					index = row * width + col;
@@ -159,7 +159,7 @@ public class KMeans {
 			for (int j = 0; j < clusterCenterList.size(); j++) {
 				clusterDisValues[j] = calculateEuclideanDistance(clusterCenterList.get(j), pointList.get(i)); // 计算每个像素点距离聚类中心的欧氏距离
 			}
-			pointList.get(i).setLable(getCloserCluster(clusterDisValues)); // 选取最近的聚类中心
+			pointList.get(i).setClusterCenterIndex(getCloserCluster(clusterDisValues)); // 选取最近的聚类中心
 		}
 
 	}
@@ -176,36 +176,36 @@ public class KMeans {
 			clusterCenterList.get(i).setNumOfPixels(0);
 		}
 
-		// recalculate the sum and total of points for each cluster
 		// 重新计算每个类族的像素点的总数
-		double[] redSums = new double[3];
+		double[] redSum = new double[3];
 		double[] greenSum = new double[3];
 		double[] blueSum = new double[3];
 		for (int i = 0; i < pointList.size(); i++) {
-			int cIndex = (int) pointList.get(i).getLable();
-			clusterCenterList.get(cIndex).addNumOfPixel();
-			int tr = (int) pointList.get(i).getRGB()[0];
-			int tg = (int) pointList.get(i).getRGB()[1];
-			int tb = (int) pointList.get(i).getRGB()[2];
-			redSums[cIndex] += tr;
+			int cIndex = (int) pointList.get(i).getClusterCenterIndex();// 得到前一次计算的每个像素点对应的聚类中心index
+			clusterCenterList.get(cIndex).addNumOfPixel(); // 增加对应类的总像素点数
+			int tr = (int) pointList.get(i).getRGB()[0]; // 获得该像素点的red
+			int tg = (int) pointList.get(i).getRGB()[1];// 获得该像素点的green
+			int tb = (int) pointList.get(i).getRGB()[2];// 获得该像素点的blue
+			redSum[cIndex] += tr;
 			greenSum[cIndex] += tg;
 			blueSum[cIndex] += tb;
 		}
 
-		double[] oldClusterCentersColors = new double[clusterCenterList.size()];
+		double[] clusterCentersColors = new double[clusterCenterList.size()];
 		for (int i = 0; i < clusterCenterList.size(); i++) {
 			double sum = clusterCenterList.get(i).getNumOfPixels();
 			int cIndex = clusterCenterList.get(i).getIndex();
-			int red = (int) (greenSum[cIndex] / sum);
-			int green = (int) (greenSum[cIndex] / sum);
-			int blue = (int) (blueSum[cIndex] / sum);
+			int red = (int) (redSum[cIndex] / sum); // 计算该类所有像素点red值的平均值
+			int green = (int) (greenSum[cIndex] / sum);// 计算该类所有像素点green值的平均值
+			int blue = (int) (blueSum[cIndex] / sum);// 计算该类所有像素点blue值的平均值
 			System.out.println("red = " + red + " green = " + green + " blue = " + blue);
 			int clusterColor = (255 << 24) | (red << 16) | (green << 8) | blue;
+			System.out.println("clusterColor=" + clusterColor);
 			clusterCenterList.get(i).setRGB(new int[] { red, green, blue });
-			oldClusterCentersColors[i] = clusterColor;
+			clusterCentersColors[i] = clusterColor;
 		}
 
-		return oldClusterCentersColors;
+		return clusterCentersColors;
 	}
 
 	/**
@@ -238,16 +238,16 @@ public class KMeans {
 	 */
 	private double calculateEuclideanDistance(ClusterCenter cluster, PixelPoint pixel) {
 		// 聚类中心
-		int clusterR = (int) cluster.getRGB()[0];
-		int clusterG = (int) cluster.getRGB()[1];
-		int clusterB = (int) cluster.getRGB()[2];
+		int clusterRed = (int) cluster.getRGB()[0];
+		int clusterGreen = (int) cluster.getRGB()[1];
+		int clusterBlue = (int) cluster.getRGB()[2];
 		// 每个像素点
-		int pixelR = (int) pixel.getRGB()[0];
-		int pixelG = (int) pixel.getRGB()[1];
-		int pixelB = (int) pixel.getRGB()[2];
+		int pixelRed = (int) pixel.getRGB()[0];
+		int pixelGreen = (int) pixel.getRGB()[1];
+		int pixelBlue = (int) pixel.getRGB()[2];
 
-		return Math.sqrt(Math.pow((pixelR - clusterR), 2.0) + Math.pow((pixelG - clusterG), 2.0)
-				+ Math.pow((pixelB - clusterB), 2.0));
+		return Math.sqrt(Math.pow((pixelRed - clusterRed), 2.0) + Math.pow((pixelGreen - clusterGreen), 2.0)
+				+ Math.pow((pixelBlue - clusterBlue), 2.0));
 	}
 
 }
